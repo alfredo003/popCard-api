@@ -1,0 +1,23 @@
+{
+  "name": "popcard-api",
+  "version": "1.0.0",
+  "description": "PopCard is an API that manages the user's money securely and offers balance management features and deposit withdrawal deadlines.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "ts-node-dev --inspect --transpile-only --ignore-watch node_modules src/server.ts",
+    "lint:check": "prettier --check .",
+    "lint:fix": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "express": "^4.21.1"
+  },
+  "devDependencies": {
+    "prettier": "^3.3.3",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.6.3"
+  }
+}
