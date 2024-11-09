@@ -1,55 +1,57 @@
+Aqui está uma versão renovada e mais simplificada do README com base nas informações fornecidas:
+
+---
+
 # popCard-api
 
-PopCard is an API that manages the user's money securely and offers balance management features and deposit withdrawal deadlines.
+**PopCard** é uma API para gerenciamento de carteiras digitais, permitindo que os usuários façam depósitos, saques e transferências, além de terem acesso a contas correntes e poupanças. A API oferece recursos de saldo disponível, depósitos a prazo e controle de vencimento.
 
 ### Funcionalidades
 
-1. **Depositar Dinheiro**:
+1. **Cadastrar Conta**:
+   - Criação de conta para o usuário, permitindo acessar sua carteira digital.
 
-   - O usuário faz um depósito.
-   - O valor do depósito é armazenado junto com a data de depósito e o prazo de saque (caso seja um depósito a prazo).
+2. **Depositar Dinheiro**:
+   - O usuário pode fazer depósitos em sua conta corrente ou conta poupança.
+   - O depósito pode ser imediato ou com um vencimento (depósito a prazo).
 
-2. **Sacar Dinheiro**:
+3. **Sacar Dinheiro**:
+   - O usuário pode sacar dinheiro de sua conta corrente.
+   - Caso o depósito seja a prazo, o saque só será possível após o vencimento.
 
-   - O usuário tenta sacar dinheiro da sua conta.
-   - Se o valor de saque for superior ao saldo, a operação falha.
-   - Se o depósito for a prazo, o saque só pode ser realizado após o prazo de vencimento.
+4. **Consultar Saldo**:
+   - Verifique o saldo disponível para saque em conta corrente ou poupança.
 
-3. **Consultar Saldo**:
-
-   - O usuário pode verificar o saldo atual disponível para saque.
-
-4. **Consultar Depósitos a Prazo**:
-   - O usuário pode verificar seus depósitos a prazo e quando o prazo para saque será atingido.
+5. **Consultar Depósitos a Prazo**:
+   - O usuário pode consultar os depósitos a prazo e verificar a data de vencimento de cada um.
 
 ### Modelo de Dados
 
-Vamos assumir um banco de dados simples, com pelo menos duas tabelas principais: `users` (usuários) e `deposits` (depósitos).
+A API utiliza duas principais tabelas para armazenar as informações:
 
-1. **Tabela `users`**:
-
+1. **Tabela `users`** (usuários):
    - `id` (chave primária)
    - `name` (nome do usuário)
-   - `email` (email do usuário)
-   - `balance` (saldo disponível para saque)
+   - `email` (e-mail do usuário)
+   - `bill_balance` (saldo disponível para saque)
 
-2. **Tabela `deposits`**:
+2. **Tabela `deposits`** (depósitos):
    - `id` (chave primária)
    - `user_id` (chave estrangeira para a tabela `users`)
    - `amount` (valor depositado)
-   - `deposit_date` (data de depósito)
-   - `maturity_date` (data de vencimento do depósito a prazo, se aplicável)
-   - `is_matured` (booleano, indica se o depósito já está disponível para saque)
+   - `deposit_date` (data do depósito)
+   - `maturity_date` (data de vencimento, se aplicável)
+   - `is_matured` (indica se o depósito já venceu e pode ser sacado)
 
 ### Endpoints da API
 
-Aqui estão os principais endpoints para a sua API `popCard`:
+Aqui estão os principais endpoints para interação com a API:
 
-#### 1. **Registrar usuário**
+#### 1. **Registrar Usuário**
 
 - **POST** `/users`
-- **Descrição**: Cria um novo usuário.
-- **Corpo da requisição**:
+- **Descrição**: Cria uma nova conta para o usuário.
+- **Corpo da Requisição**:
 
 ```json
 {
@@ -71,8 +73,8 @@ Aqui estão os principais endpoints para a sua API `popCard`:
 #### 2. **Depositar Dinheiro**
 
 - **POST** `/deposit`
-- **Descrição**: Permite o usuário depositar dinheiro.
-- **Corpo da requisição**:
+- **Descrição**: Realiza um depósito na conta do usuário (corrente ou poupança).
+- **Corpo da Requisição**:
 
 ```json
 {
@@ -98,8 +100,8 @@ Aqui estão os principais endpoints para a sua API `popCard`:
 #### 3. **Sacar Dinheiro**
 
 - **POST** `/withdraw`
-- **Descrição**: Permite o saque de dinheiro, levando em consideração se o depósito é a prazo.
-- **Corpo da requisição**:
+- **Descrição**: Permite o saque de dinheiro da conta corrente. Caso o depósito seja a prazo, o saque só pode ser feito após o vencimento.
+- **Corpo da Requisição**:
 
 ```json
 {
@@ -108,7 +110,7 @@ Aqui estão os principais endpoints para a sua API `popCard`:
 }
 ```
 
-- **Resposta** (se o depósito for a prazo e ainda não venceu):
+- **Resposta (se o depósito ainda não venceu)**:
 
 ```json
 {
@@ -116,7 +118,7 @@ Aqui estão os principais endpoints para a sua API `popCard`:
 }
 ```
 
-- **Resposta** (se o saque for bem-sucedido):
+- **Resposta (se o saque for bem-sucedido)**:
 
 ```json
 {
@@ -128,7 +130,7 @@ Aqui estão os principais endpoints para a sua API `popCard`:
 #### 4. **Consultar Saldo**
 
 - **GET** `/users/{user_id}/balance`
-- **Descrição**: Retorna o saldo disponível para saque.
+- **Descrição**: Retorna o saldo disponível para saque na conta do usuário.
 - **Resposta**:
 
 ```json
@@ -140,7 +142,7 @@ Aqui estão os principais endpoints para a sua API `popCard`:
 #### 5. **Consultar Depósitos a Prazo**
 
 - **GET** `/users/{user_id}/deposits`
-- **Descrição**: Retorna todos os depósitos a prazo de um usuário.
+- **Descrição**: Retorna todos os depósitos a prazo de um usuário, incluindo as datas de vencimento.
 - **Resposta**:
 
 ```json
@@ -155,16 +157,8 @@ Aqui estão os principais endpoints para a sua API `popCard`:
 ]
 ```
 
-### Lógica de Negócio para o Prazo de Saque
+### Lógica de Negócio para Depósitos a Prazo
 
-- Ao fazer o depósito, você pode incluir uma data de vencimento (`maturity_date`).
-- Quando o usuário tentar sacar o dinheiro, a API deve verificar se o depósito já venceu (`is_matured`). Se não tiver vencido, a operação de saque não é permitida.
-- Quando a data de vencimento for atingida, você pode atualizar o campo `is_matured` para `true`, permitindo que o usuário realize o saque.
-
-### Considerações de Segurança
-
-- Verifique se o valor do depósito é positivo.
-- A validação de dados é importante para evitar erros.
-- Você pode implementar autenticação para garantir que os usuários apenas possam acessar seus próprios dados.
-
-Se você precisar de mais detalhes em qualquer uma dessas partes ou quiser discutir o design da API mais a fundo, estou à disposição!
+- Os depósitos podem ter uma data de vencimento (`maturity_date`).
+- O saque de depósitos a prazo só é permitido após a data de vencimento, quando o campo `is_matured` se torna `true`.
+- Se o saque for solicitado antes do vencimento, a operação falhará com uma mensagem informando sobre a data de liberação.

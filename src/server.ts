@@ -1,10 +1,9 @@
-import express,{Request,Response} from "express";
+import express from "express";
+import { authRouter } from "./routes/auth.routes"; 
 
 const PORT = 3000;
 const app = express();
+app.use(express.json());
 
-app.get("/", (req:Request, res:Response) => {
-    //const test = req.params;
-  return res.status(200).send();
-});
+app.use("/", authRouter);
 app.listen(PORT, () => console.log(`Server running in port ${PORT}`));
