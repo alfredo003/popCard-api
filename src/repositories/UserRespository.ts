@@ -7,10 +7,17 @@ interface IUserDTO {
 }
 class UserRepository {
   private users: User[];
-  constructor() {
+  private static INSTANCE:UserRepository;
+
+  private constructor() {
     this.users = [];
   }
-
+  public static getInstance():UserRepository
+  {
+      if(!this.INSTANCE)
+          this.INSTANCE = new UserRepository();
+        return this.INSTANCE;
+  }
   create({name,email,password}:IUserDTO):User {
     const user = new User();
     Object.assign(user,{

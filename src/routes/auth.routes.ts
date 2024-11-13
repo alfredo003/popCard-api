@@ -4,17 +4,16 @@ import { CreateUserService } from "../services/CreateUserService";
 
 const authRouter = Router();
 
-const userRepository = new UserRepository();
+const userRepository = UserRepository.getInstance();
 
 authRouter.post("/sign-up", (req, res) => {
- const { name, email, password } = req.body;
+  const { name, email, password } = req.body;
 
- const createUserService = new CreateUserService(userRepository);
+  const createUserService = new CreateUserService(userRepository);
 
- createUserService.execute({name,email,password});
+  createUserService.execute({ name, email, password });
 
- return res.status(201).send();
+  return res.status(201).send();
 });
-
 
 export { authRouter };
